@@ -4,13 +4,11 @@ module Main {
     export interface Scope {
         images: string[];
         loadMore: () => void;
-        http: ng.IHttpService;
-        q: ng.IQService;
     }
 
     export class Controller {
         constructor(private $scope: Scope, $http: ng.IHttpService, $q: ng.IQService) {
-            $scope.images = ["1", "2", "3"];
+            
             this.after = "";
             this.busy = false;
 
@@ -44,7 +42,7 @@ module Main {
                             });
 
                         newImages.forEach(img => {
-                            this.$scope.images.push(img);
+                            $scope.images.push(img);
                         });
                         this.after = data.data.after;
                         this.busy = false;
@@ -54,6 +52,8 @@ module Main {
                     });
                 return deferred.promise;
             }
+
+            $scope.loadMore();
         }
 
         busy: boolean;
