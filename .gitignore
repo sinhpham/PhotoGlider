@@ -212,3 +212,7 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+
+# TypeScript generated files
+PhotoGlider/PhotoGliderWeb/Scripts/Controllers/*.js
+PhotoGlider/PhotoGliderWeb/Scripts/Controllers/*.map
