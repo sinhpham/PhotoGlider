@@ -11,6 +11,8 @@ module Main {
             
             this.after = "";
             this.busy = false;
+            this.$scope.images = [];
+
 
             $scope.loadMore = () => {
                 if (this.busy) return;
