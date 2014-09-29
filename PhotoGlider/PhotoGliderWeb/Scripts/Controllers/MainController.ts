@@ -7,8 +7,8 @@ module Main {
     }
 
     export class Controller {
-        constructor(private $scope: Scope, $http: ng.IHttpService, $q: ng.IQService) {
-            
+        constructor(private $scope:Scope, $http:ng.IHttpService, $q:ng.IQService) {
+
             this.after = "";
             this.busy = false;
             this.$scope.images = [];
@@ -25,12 +25,10 @@ module Main {
                     url = "http://www.reddit.com/r/all/new.json";
                 }
 
-                var deferred = $q.defer();
-
-                return $http.get(url)
-                    .success((data: any) => {
+                $http.get(url)
+                    .success((data:any) => {
                         var count = data.data.children.length;
-                        deferred.resolve(data);
+                        //deferred.resolve(data);
                         var dataArr = <Array<any>>data.data.children;
                         var newImages = dataArr.filter((v, idx, arr) => {
                             var tLink = v.data.thumbnail;
@@ -40,8 +38,8 @@ module Main {
                             return true;
                         }).map((v, idx, arr) => {
 
-                                return v.data.thumbnail;
-                            });
+                            return v.data.thumbnail;
+                        });
 
                         newImages.forEach(img => {
                             $scope.images.push(img);
@@ -49,17 +47,16 @@ module Main {
                         this.after = data.data.after;
                         this.busy = false;
                     })
-                    .error((data: any) => {
-                        deferred.reject(data);
+                    .error((data:any) => {
+                        //deferred.reject(data);
                     });
-                return deferred.promise;
-            }
+            };
 
             $scope.loadMore();
         }
 
-        busy: boolean;
-        after: string;
+        busy:boolean;
+        after:string;
     }
 }
 
