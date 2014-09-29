@@ -8,14 +8,17 @@
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
     <script src="Scripts/jquery-2.1.1.js"></script>
     <script src="Scripts/angular.js"></script>
+    <script type='text/javascript' src='Scripts/ng-infinite-scroll.js'></script>
 
     <script src="Scripts/Controllers/MainController.js"></script>
 </head>
 <body ng-app="PhotoGliderWeb">
     <h1>TypeScript HTML App</h1>
     <div id="galery" class="pure-g" ng-controller="Main.Controller">
-        <div class="pure-u-1-5" ng-repeat="img in images" style="height:300px;">
-            <img src=" {{ img }}" class="pure-img" style="max-height:100%; margin-left: auto; margin-right: auto;" />
+        <div infinite-scroll="loadMore()" infinite-scroll-distance="3">
+            <div class="pure-u-1-5" ng-repeat="img in images" style="height:300px;">
+                <img src=" {{ img }}" class="pure-img" style="max-height:100%; margin-left: auto; margin-right: auto;" />
+            </div>
         </div>
     </div>
 </body>
