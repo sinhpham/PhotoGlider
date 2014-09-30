@@ -772,6 +772,7 @@
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\ng-infinite-scroll.js" />
     <Content Include="Scripts\ng-infinite-scroll.min.js" />
+    <Content Include="Scripts\URI.js" />
     <Content Include="web.config" />
     <Content Include="Scripts\jquery-2.1.1.min.map" />
   </ItemGroup>
@@ -808,6 +809,7 @@
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-scenario.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\urijs\URI.d.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>

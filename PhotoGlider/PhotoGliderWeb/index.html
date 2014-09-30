@@ -2,9 +2,9 @@
 
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <title>TypeScript HTML App</title>
-    <link rel="stylesheet" href="app.css" type="text/css"/>
+    <link rel="stylesheet" href="app.css" type="text/css" />
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
     <script src="Scripts/jquery-2.1.1.js"></script>
     <script src="Scripts/angular.js"></script>
@@ -13,17 +13,24 @@
     <script src="Scripts/Controllers/MainController.js"></script>
 </head>
 <body ng-app="PhotoGliderWeb">
-<h1>TypeScript HTML App</h1>
-
-<div id="galery" class="pure-g" ng-controller="Main.Controller">
-    <div infinite-scroll="loadMore()" infinite-scroll-distance="3">
-        <div class="pure-u-1-5" ng-repeat="img in images" style="height:300px;">
-            <a href="{{ img.DisplayingImage.ImageLink }}">
-                <img src=" {{ img.DisplayingImage.ThumbnailLink }}" class="pure-img"
-                     style="max-height:100%; margin-left: auto; margin-right: auto;"/>
-            </a>
+    <div class="header">
+        <div class="pure-menu pure-menu-open pure-menu-horizontal">
+            <a class="pure-menu-heading" href="">Photo Glider</a>
+            <ul>
+                <li class="pure-menu-selected"><a class="pure-button pure-button-primary" href="#">A Primary Button</a></li>
+                <li><input type="text" class="pure-input-1-2" placeholder="Username"></li>
+            </ul>
         </div>
     </div>
-</div>
+    <div id="galery" class="pure-g" ng-controller="Main.Controller">
+        <div infinite-scroll="loadMore()" infinite-scroll-distance="3">
+            <div class="pure-u-1-5" ng-repeat="img in images" style="height:200px;">
+                <a href="{{ img.DisplayingImage.ImageLink }}">
+                    <img src=" {{ img.DisplayingImage.ThumbnailLink }}" class="pure-img"
+                         style="height:100%; margin-left: auto; margin-right: auto;" />
+                </a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
