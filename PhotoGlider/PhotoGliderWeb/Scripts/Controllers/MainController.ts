@@ -45,7 +45,6 @@ module Main {
                 $http.get(url)
                     .success((data:any) => {
                         var count = data.data.children.length;
-                        //deferred.resolve(data);
                         var dataArr = <Array<any>>data.data.children;
                         var newImages = dataArr.filter((v, idx, arr) => {
                             var tLink = v.data.thumbnail;
@@ -73,7 +72,6 @@ module Main {
                         this.busy = false;
                     })
                     .error((data:any) => {
-                        //deferred.reject(data);
                     });
             };
 
