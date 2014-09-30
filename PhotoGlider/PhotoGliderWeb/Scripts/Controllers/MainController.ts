@@ -1,8 +1,25 @@
 ﻿/// <reference path="../../Scripts/typings/angularjs/angular.d.ts" />
 
 module Main {
+
+    export class InternetImage {
+        ImageLink:string;
+        ThumbnailLink:string;
+    }
+
+    export class RedditImage {
+
+        DisplayingImage:InternetImage;
+
+        Permalink:string;
+        OriginalUrl:string;
+        NSFW:boolean;
+
+        GalleryImages:InternetImage[];
+    }
+
     export interface Scope {
-        images: string[];
+        images: RedditImage[];
         loadMore: () => void;
     }
 
@@ -37,8 +54,16 @@ module Main {
                             }
                             return true;
                         }).map((v, idx, arr) => {
+                            var ri = new RedditImage();
+                            ri.OriginalUrl = v.data.url;
+                            ri.Permalink = v.data.permalink;
+                            ri.NSFW = v.data.over_18;
+                            ri.DisplayingImage = new InternetImage();
+                            ri.DisplayingImage.ImageLink = v.data.url;
+                            ri.DisplayingImage.ThumbnailLink = v.data.thumbnail;
 
-                            return v.data.thumbnail;
+
+                            return ri;
                         });
 
                         newImages.forEach(img => {
