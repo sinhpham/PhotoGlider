@@ -1,6 +1,8 @@
 ﻿/// <reference path="../../Scripts/typings/angularjs/angular.d.ts" />
 /// <reference path="../../Scripts/typings/urijs/URI.d.ts" />
 
+declare function sprintf(fmt: string, ...args: any[]): string;
+
 module Main {
 
     export class InternetImage {
@@ -22,6 +24,7 @@ module Main {
     export interface MyScope extends ng.IScope {
         subreddit: string;
         images: RedditImage[];
+        changeSubReddit: () => void;
         loadMore: () => void;
     }
 
@@ -33,19 +36,21 @@ module Main {
             this.$scope.images = [];
             this.$scope.subreddit = "pics";
 
-            $scope.$watch("subreddit", (newVal, oldVal, s) => {
-                console.log(newVal);
-            });
+            $scope.changeSubReddit = () => {
+                this.after = "";
+                this.busy = false;
+                this.$scope.images = [];
+
+                $scope.loadMore();
+            };
 
             $scope.loadMore = () => {
                 if (this.busy) return;
                 this.busy = true;
 
-                var url = "";
+                var url = <string>sprintf("http://www.reddit.com/r/%s/new.json", $scope.subreddit);
                 if (this.after) {
-                    url = "http://www.reddit.com/r/pics/new.json?after=" + this.after
-                } else {
-                    url = "http://www.reddit.com/r/pics/new.json";
+                    url = url.concat(sprintf("?after=%s", this.after));
                 }
 
                 $http.get(url)

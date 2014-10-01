@@ -772,6 +772,7 @@
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\ng-infinite-scroll.js" />
     <Content Include="Scripts\ng-infinite-scroll.min.js" />
+    <Content Include="Scripts\sprintf.js" />
     <Content Include="Scripts\URI.js" />
     <Content Include="web.config" />
     <Content Include="Scripts\jquery-2.1.1.min.map" />

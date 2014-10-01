@@ -10,6 +10,7 @@
     <script src="Scripts/angular.js"></script>
     <script type='text/javascript' src='Scripts/ng-infinite-scroll.js'></script>
     <script src="Scripts/URI.js"></script>
+    <script src="Scripts/sprintf.js"></script>
 
     <script src="Scripts/Controllers/MainController.js"></script>
 </head>
@@ -19,7 +20,7 @@
             <div class="pure-menu pure-menu-open pure-menu-horizontal">
                 <a class="pure-menu-heading" href="">Photo Glider</a>
                 <ul>
-                    <li><a class="pure-button pure-button-primary" href="#">Go</a></li>
+                    <li><a class="pure-button pure-button-primary" ng-click="changeSubReddit()">Go</a></li>
                     <li><input type="text" class="pure-input-1-2" ng-model="subreddit"></li>
                 </ul>
             </div>
