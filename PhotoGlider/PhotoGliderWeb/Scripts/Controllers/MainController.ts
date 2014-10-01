@@ -19,18 +19,23 @@ module Main {
         GalleryImages: InternetImage[];
     }
 
-    export interface Scope {
+    export interface MyScope extends ng.IScope {
+        subreddit: string;
         images: RedditImage[];
         loadMore: () => void;
     }
 
     export class Controller {
-        constructor(private $scope: Scope, $http: ng.IHttpService, $q: ng.IQService) {
+        constructor(private $scope: MyScope, $http: ng.IHttpService, $q: ng.IQService) {
 
             this.after = "";
             this.busy = false;
             this.$scope.images = [];
+            this.$scope.subreddit = "pics";
 
+            $scope.$watch("subreddit", (newVal, oldVal, s) => {
+                console.log(newVal);
+            });
 
             $scope.loadMore = () => {
                 if (this.busy) return;
