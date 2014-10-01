@@ -4,19 +4,19 @@
 module Main {
 
     export class InternetImage {
-        ImageLink:string;
-        ThumbnailLink:string;
+        ImageLink: string;
+        ThumbnailLink: string;
     }
 
     export class RedditImage {
 
-        DisplayingImage:InternetImage;
+        DisplayingImage: InternetImage;
 
-        Permalink:string;
-        OriginalUrl:string;
-        NSFW:boolean;
+        Permalink: string;
+        OriginalUrl: string;
+        NSFW: boolean;
 
-        GalleryImages:InternetImage[];
+        GalleryImages: InternetImage[];
     }
 
     export interface Scope {
@@ -25,7 +25,7 @@ module Main {
     }
 
     export class Controller {
-        constructor(private $scope:Scope, $http:ng.IHttpService, $q:ng.IQService) {
+        constructor(private $scope: Scope, $http: ng.IHttpService, $q: ng.IQService) {
 
             this.after = "";
             this.busy = false;
@@ -44,7 +44,7 @@ module Main {
                 }
 
                 $http.get(url)
-                    .success((data:any) => {
+                    .success((data: any) => {
                         var count = data.data.children.length;
                         var dataArr = <Array<any>>data.data.children;
                         var newImages = dataArr.filter((v, idx, arr) => {
@@ -54,20 +54,30 @@ module Main {
                             }
                             return true;
                         }).map((v, idx, arr) => {
-                            var ri = new RedditImage();
-                            ri.OriginalUrl = v.data.url;
-                            ri.Permalink = v.data.permalink;
-                            ri.NSFW = v.data.over_18;
-                            ri.DisplayingImage = new InternetImage();
-                            ri.DisplayingImage.ImageLink = v.data.url;
-                            ri.DisplayingImage.ThumbnailLink = v.data.thumbnail;
+                                var ri = new RedditImage();
+                                ri.OriginalUrl = v.data.url;
+                                ri.Permalink = v.data.permalink;
+                                ri.NSFW = v.data.over_18;
 
-                            var ext = new ImgUrlExtractor($http);
-                            var ans = ext.Extract(ri.OriginalUrl);
+                                var ext = new ImgUrlExtractor($http);
+                                var ans = ext.Extract(ri.OriginalUrl);
 
+                                var linkedImg = ans.image;
+                                var galleryUrls = ans.gallery;
 
-                            return ri;
-                        });
+                                if (linkedImg != null && linkedImg.ThumbnailLink == null) {
+                                    linkedImg.ThumbnailLink = v.data.thumbnail;
+                                }
+
+                                if (linkedImg == null && galleryUrls != null && galleryUrls.length > 0) {
+                                    linkedImg = galleryUrls[0];
+                                }
+
+                                ri.DisplayingImage = linkedImg;
+                                ri.GalleryImages = galleryUrls;
+
+                                return ri;
+                            });
 
                         newImages.forEach(img => {
                             $scope.images.push(img);
@@ -75,29 +85,30 @@ module Main {
                         this.after = data.data.after;
                         this.busy = false;
                     })
-                    .error((data:any) => {
+                    .error((data: any) => {
                     });
             };
 
             $scope.loadMore();
         }
 
-        busy:boolean;
-        after:string;
+        busy: boolean;
+        after: string;
     }
 
-    /*export interface Dictionary<TKey, TValue> {
-     [index: TKey]: TValue;
-     }*/
+    export class ExtractedInfor {
+        image: InternetImage;
+        gallery: InternetImage[];
+    }
 
     export class ImgUrlExtractor {
-        constructor(private $http:ng.IHttpService) {
+        constructor(private $http: ng.IHttpService) {
         }
 
-        Extract(inputUrl:string):{} {
-            var ret = new InternetImage();
-            ret.ImageLink = inputUrl;
-            var galleryUrls:InternetImage[] = [];
+        Extract(inputUrl: string): ExtractedInfor {
+            var mainImg = new InternetImage();
+            mainImg.ImageLink = inputUrl;
+            var galleryImgs: InternetImage[] = [];
 
             var u = new URI(inputUrl);
             if (u.host() == "m.imgur.com") {
@@ -108,20 +119,23 @@ module Main {
             if (u.host() == "imgur.com") {
                 if (u.path().indexOf("/a") == 0) {
                     // Imgur albums.
-                    galleryUrls = new Array<InternetImage>();
-                    ret = null;
+                    galleryImgs = new Array<InternetImage>();
+                    mainImg = null;
 
                     var apArr = u.path().split("/").filter(currStr => currStr != "");
 
                     var albumBlogLayoutUrl = "http://" + u.host() + "/" + apArr[0] + "/" + apArr[1] + "/layout/blog";
 
-                    this.$http.get(albumBlogLayoutUrl)
-                        .success((data:any) => {
-                            var parser = new DOMParser();
-                            var htmlDoc = parser.parseFromString(data, "text/html");
+                    //this.$http.get(albumBlogLayoutUrl)
+                    //    .success((data: any) => {
+                    //        var parser = new DOMParser();
+                    //        var htmlDoc = parser.parseFromString(data, "text/html");
 
 
-                        });
+                    //    })
+                    //    .catch((reason: any) => {
+                    //        var a = 0;
+                    //    });
 
                     /*var albumPage: string = null;
 
@@ -156,24 +170,24 @@ module Main {
                     if (u.path().indexOf('.') == -1) {
                         imgLink += ".jpg";
                     }
-                    ret.ImageLink = imgLink;
-                    ret.ThumbnailLink = this.GetThumbnailPathFromUrl(imgLink);
+                    mainImg.ImageLink = imgLink;
+                    mainImg.ThumbnailLink = this.GetThumbnailPathFromUrl(imgLink);
                 }
             }
             else if (u.host() == "i.imgur.com") {
                 // Direct link to an image.
-                ret.ThumbnailLink = this.GetThumbnailPathFromUrl(ret.ImageLink);
+                mainImg.ThumbnailLink = this.GetThumbnailPathFromUrl(mainImg.ImageLink);
             }
 
-            var map:{ [key: string]: any; } = { };
-            map["internetimage"] = ret;
-            map["gallery"] = galleryUrls;
+            var ret = new ExtractedInfor();
+            ret.image = mainImg;
+            ret.gallery = galleryImgs;
 
-            return map;
+            return ret;
         }
 
-        private GetThumbnailPathFromUrl(inputUrl:string):string {
-            var ret:string = null;
+        private GetThumbnailPathFromUrl(inputUrl: string): string {
+            var ret: string = null;
 
             var u = new URI(inputUrl);
             if (u.host() == "i.imgur.com") {
