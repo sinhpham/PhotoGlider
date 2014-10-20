@@ -4,10 +4,13 @@ using PhotoGliderPCL.ViewModels;
 using PhotoGliderWindowsStore.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -102,6 +105,8 @@ namespace PhotoGliderWindowsStore.Views
             };
 
             PageDataContext[MenuOpenedKey] = AppPCL.SettingVM.OpenMenuOnStart;
+
+            VM.Images = new PaginatedCollection<RedditImage>(LoadRedditImages);
         }
 
         /// <summary>
@@ -208,6 +213,28 @@ namespace PhotoGliderWindowsStore.Views
                     }
                 }
             };
+        }
+
+        async Task<IEnumerable<RedditImage>> LoadRedditImages(PaginatedCollection<RedditImage> collection, uint count)
+        {
+            var retList = new List<RedditImage>();
+            if (string.Equals("null", collection.NextPath, StringComparison.Ordinal))
+            {
+                return retList;
+            }
+
+            var link = collection.NextPath != null ?
+                string.Format("http://www.reddit.com/r/{0}/new.json?after={1}&limit={2}", VM.SubReddit, collection.NextPath, count) :
+                string.Format("http://www.reddit.com/r/{0}/new.json?limit={1}", VM.SubReddit, count);
+
+            var hc = new HttpClient();
+            var jsonText = await hc.GetStringAsync(link);
+
+            string newNextPath;
+            retList = RedditImageParser.ParseFromJson(jsonText, out newNextPath);
+            collection.NextPath = newNextPath;
+
+            return retList;
         }
     }
 
@@ -325,6 +352,40 @@ namespace PhotoGliderWindowsStore.Views
                             dob.ActualHeight));
 
             return new Rect(pos, pos2);
+        }
+    }
+
+    public class PaginatedCollection<T> : ObservableCollection<T>, IPaginatedCollection<T>, ISupportIncrementalLoading
+    {
+        private Func<PaginatedCollection<T>, uint, Task<IEnumerable<T>>> load;
+        public bool HasMoreItems { get; private set; }
+
+        public string NextPath { get; set; }
+
+        public PaginatedCollection(Func<PaginatedCollection<T>, uint, Task<IEnumerable<T>>> load)
+        {
+            HasMoreItems = true;
+            this.load = load;
+        }
+
+        public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
+        {
+            return AsyncInfo.Run(async c =>
+            {
+                var data = await load(this, count);
+
+                foreach (var item in data)
+                {
+                    Add(item);
+                }
+
+                HasMoreItems = data.Any();
+
+                return new LoadMoreItemsResult()
+                {
+                    Count = (uint)data.Count(),
+                };
+            });
         }
     }
 }

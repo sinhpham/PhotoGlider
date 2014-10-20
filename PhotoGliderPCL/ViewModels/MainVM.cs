@@ -31,12 +31,10 @@ namespace PhotoGliderPCL.ViewModels
             {
                 SubReddit = SubReddits[0];
             }
-
-            LoadRedditImages(Images, 100);
         }
 
-        private ObservableCollection<RedditImage> _images;
-        public ObservableCollection<RedditImage> Images
+        private IPaginatedCollection<RedditImage> _images;
+        public IPaginatedCollection<RedditImage> Images
         {
             get { return this._images; }
             set { SetProperty(ref _images, value); }
@@ -126,7 +124,7 @@ namespace PhotoGliderPCL.ViewModels
                 {
                     _refreshCmd = new Command(() =>
                     {
-                        Images = new ObservableCollection<RedditImage>();
+                        //Images = new ObservableCollection<RedditImage>();
                     });
                 }
                 return _refreshCmd;
@@ -185,66 +183,10 @@ namespace PhotoGliderPCL.ViewModels
                 eh(this, EventArgs.Empty);
             }
         }
-
-        async Task<IEnumerable<RedditImage>> LoadRedditImages(ObservableCollection<RedditImage> collection, uint count)
-        {
-            var retList = new List<RedditImage>();
-            //if (string.Equals("null", collection.NextPath, StringComparison.Ordinal))
-            //{
-            //    return retList;
-            //}
-
-            var link = //false ?
-                //string.Format("http://www.reddit.com/r/{0}/new.json?after={1}&limit={2}", SubReddit, collection.NextPath, count) :
-                string.Format("http://www.reddit.com/r/{0}/new.json?limit={1}", SubReddit, count);
-
-            var hc = new HttpClient();
-            var jsonText = await hc.GetStringAsync(link);
-
-            string newNextPath;
-            retList = RedditImageParser.ParseFromJson(jsonText, out newNextPath);
-            //collection.NextPath = newNextPath;
-
-            foreach (var ri in retList)
-            {
-                collection.Add(ri);
-            }
-
-            return retList;
-        }
     }
 
-    //public class PaginatedCollection<T> : ObservableCollection<T>, ISupportIncrementalLoading
-    //{
-    //    private Func<PaginatedCollection<T>, uint, Task<IEnumerable<T>>> load;
-    //    public bool HasMoreItems { get; private set; }
+    public interface IPaginatedCollection<T> : ICollection<T>
+    {
 
-    //    public string NextPath { get; set; }
-
-    //    public PaginatedCollection(Func<PaginatedCollection<T>, uint, Task<IEnumerable<T>>> load)
-    //    {
-    //        HasMoreItems = true;
-    //        this.load = load;
-    //    }
-
-    //    public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
-    //    {
-    //        return AsyncInfo.Run(async c =>
-    //        {
-    //            var data = await load(this, count);
-
-    //            foreach (var item in data)
-    //            {
-    //                Add(item);
-    //            }
-
-    //            HasMoreItems = data.Any();
-
-    //            return new LoadMoreItemsResult()
-    //            {
-    //                Count = (uint)data.Count(),
-    //            };
-    //        });
-    //    }
-    //}
+    }
 }
