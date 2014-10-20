@@ -58,7 +58,7 @@ namespace PhotoGliderPCL.Models
                 nextPath = "null";
             }
 
-            ret = jArr.Select(rawJVal =>
+            var allRedditImages = Task.WhenAll(jArr.Select(async rawJVal =>
             {
                 dynamic dJVal = (dynamic)rawJVal;
 
@@ -105,7 +105,9 @@ namespace PhotoGliderPCL.Models
                 });
 
                 return item;
-            }).Where(item => item != null).ToList();
+            })).Result;
+            ret = allRedditImages.Where(item => item != null).ToList();
+
 
             return ret;
         }
