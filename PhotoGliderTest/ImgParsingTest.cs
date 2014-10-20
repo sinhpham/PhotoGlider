@@ -38,6 +38,7 @@ namespace PhotoGliderTest
         public void AlbumImgLink()
         {
             var res = ImgUrlExtractor.Extract("http://imgur.com/a/4zD5s").Result;
+            Assert.AreNotEqual(res.Item2, null);
         }
     }
 }

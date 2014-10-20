@@ -98,7 +98,15 @@ namespace PhotoGliderPCL.Models
                     // Modify UI, so need to run this on UI thread.
                     //CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     //{
-                    item.DisplayingImage = linkedImg;
+                    if (RunOnUiThread != null)
+                    {
+                        RunOnUiThread(() =>
+                        {
+                            item.DisplayingImage = linkedImg;
+                        });
+                    }
+                        
+                    
                     //}//);
 
                     item.GalleryImages = galleryUrls;
@@ -111,6 +119,8 @@ namespace PhotoGliderPCL.Models
 
             return ret;
         }
+
+        public static Action<Action> RunOnUiThread;
     }
 
     public static class ImgUrlExtractor
@@ -166,7 +176,7 @@ namespace PhotoGliderPCL.Models
                                     Debug.WriteLine("Error in parsing");
                                 }
 
-                                var imgLink = string.Format("http:{0}", imgNode.First().GetAttributeValue("data-src", "not found"));
+                                var imgLink = string.Format("http:{0}", imgNode.First().GetAttributeValue("src", "not found"));
                                 return new InternetImage()
                                 {
                                     ImageLink = imgLink,

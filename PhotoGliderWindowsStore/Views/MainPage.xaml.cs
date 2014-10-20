@@ -11,8 +11,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -107,6 +109,9 @@ namespace PhotoGliderWindowsStore.Views
             PageDataContext[MenuOpenedKey] = AppPCL.SettingVM.OpenMenuOnStart;
 
             VM.Images = new PaginatedCollection<RedditImage>(LoadRedditImages);
+            RedditImageParser.RunOnUiThread = new Action<Action>(act => {
+                CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => act());
+            });
         }
 
         /// <summary>
