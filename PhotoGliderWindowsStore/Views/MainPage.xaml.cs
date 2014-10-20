@@ -109,9 +109,9 @@ namespace PhotoGliderWindowsStore.Views
             PageDataContext[MenuOpenedKey] = AppPCL.SettingVM.OpenMenuOnStart;
 
             VM.Images = new PaginatedCollection<RedditImage>(LoadRedditImages);
-            RedditImageParser.RunOnUiThread = new Action<Action>(act => {
+            RedditImageParser.RunOnUiThread = act => {
                 CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => act());
-            });
+            };
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace PhotoGliderWindowsStore.Views
         private void ItemView_ItemClick(object sender, ItemClickEventArgs e)
         {
             VM.SelectedItem = (RedditImage)e.ClickedItem;
-            //this.Frame.Navigate(typeof(ItemDetailPage));
+            this.Frame.Navigate(typeof(ItemDetailPage));
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
