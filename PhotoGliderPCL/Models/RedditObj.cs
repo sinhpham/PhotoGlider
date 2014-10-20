@@ -46,22 +46,24 @@ namespace PhotoGliderPCL.Models
         {
             var ret = new List<RedditImage>();
 
-            var jsonObject = JObject.Parse(jsonText);
-            var jArr = jsonObject["data"]["children"] as JArray;
+            dynamic jsonObject = JObject.Parse(jsonText);
+            var jArr = jsonObject.data.children as JArray;
 
             try
             {
-                nextPath = jsonObject["data"]["after"].ToString();
+                nextPath = jsonObject.data.after;
             }
             catch (InvalidOperationException)
             {
                 nextPath = "null";
             }
 
-            ret = jArr.Select(jVal =>
+            ret = jArr.Select(rawJVal =>
             {
-                var itemObject = jVal["data"];
-                var tentativeThumbnail = itemObject["thumbnail"].ToString();
+                dynamic dJVal = (dynamic)rawJVal;
+
+                var itemDynamicObj = dJVal.data;
+                var tentativeThumbnail = (string)itemDynamicObj.thumbnail;
 
                 if (!Uri.IsWellFormedUriString(tentativeThumbnail, UriKind.Absolute))
                 {
@@ -70,22 +72,22 @@ namespace PhotoGliderPCL.Models
 
                 var item = new RedditImage()
                 {
-                    Title = System.Net.WebUtility.HtmlDecode(itemObject["title"].ToString()),
-                    Permalink = "http://reddit.com" + itemObject["permalink"].ToString(),
-                    OriginalUrl = itemObject["url"].ToString(),
-                    //NSFW = itemObject["over_18"].to(),
+                    Title = System.Net.WebUtility.HtmlDecode((string)itemDynamicObj.title),
+                    Permalink = "http://reddit.com" + (string)itemDynamicObj.permalink,
+                    OriginalUrl = (string)itemDynamicObj.url,
+                    NSFW = (bool)itemDynamicObj.over_18,
                 };
 
                 // Parser task here to determine the correct image and album
                 Task.Run(async () =>
                 {
-                    var extractRet = await ImgUrlExtractor.Extract(itemObject["url"].ToString());
+                    var extractRet = await ImgUrlExtractor.Extract((string)itemDynamicObj.url);
                     var linkedImg = extractRet.Item1;
                     var galleryUrls = extractRet.Item2;
 
                     if (linkedImg != null && linkedImg.ThumbnailLink == null)
                     {
-                        linkedImg.ThumbnailLink = itemObject["thumbnail"].ToString();
+                        linkedImg.ThumbnailLink = (string)itemDynamicObj.thumbnail;
                     }
 
                     if (linkedImg == null && galleryUrls != null && galleryUrls.Count > 0)
@@ -96,7 +98,7 @@ namespace PhotoGliderPCL.Models
                     // Modify UI, so need to run this on UI thread.
                     //CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     //{
-                        item.DisplayingImage = linkedImg;
+                    item.DisplayingImage = linkedImg;
                     //}//);
 
                     item.GalleryImages = galleryUrls;

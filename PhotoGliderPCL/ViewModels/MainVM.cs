@@ -205,6 +205,11 @@ namespace PhotoGliderPCL.ViewModels
             retList = RedditImageParser.ParseFromJson(jsonText, out newNextPath);
             //collection.NextPath = newNextPath;
 
+            foreach (var ri in retList)
+            {
+                collection.Add(ri);
+            }
+
             return retList;
         }
     }
