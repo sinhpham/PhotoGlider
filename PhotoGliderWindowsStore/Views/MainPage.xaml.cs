@@ -1,6 +1,10 @@
-﻿using PhotoGliderWindowsStore.Common;
+﻿using PhotoGliderPCL;
+using PhotoGliderPCL.Models;
+using PhotoGliderPCL.ViewModels;
+using PhotoGliderWindowsStore.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -25,15 +29,18 @@ namespace PhotoGliderWindowsStore.Views
     {
 
         private NavigationHelper navigationHelper;
-        private ObservableDictionary defaultViewModel = new ObservableDictionary();
-
-        /// <summary>
-        /// This can be changed to a strongly typed view model.
-        /// </summary>
-        public ObservableDictionary DefaultViewModel
+        public MainVM VM
         {
-            get { return this.defaultViewModel; }
+            get { return AppPCL.MainVM; }
         }
+
+        private ObservableDictionary pageDataContext = new ObservableDictionary();
+        public ObservableDictionary PageDataContext
+        {
+            get { return this.pageDataContext; }
+        }
+
+        static readonly string MenuOpenedKey = "MenuOpened";
 
         /// <summary>
         /// NavigationHelper is used on each page to aid in navigation and 
@@ -51,6 +58,50 @@ namespace PhotoGliderWindowsStore.Views
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += navigationHelper_LoadState;
             this.navigationHelper.SaveState += navigationHelper_SaveState;
+
+            VM.PropertyChanged += (s, arg) =>
+            {
+                if (arg.PropertyName == "SubReddit")
+                {
+                    var idx = VM.SubReddits.IndexOf(VM.SubReddit);
+                    _subList.SelectedIndex = idx;
+                }
+            };
+
+            _subList.Items.VectorChanged += (s, arg) =>
+            {
+                _subList.SelectedItem = VM.SubReddit;
+            };
+
+            _subList.Loaded += (s, arg) =>
+            {
+                _subList.SelectedItem = VM.SubReddit;
+            };
+
+            AppPCL.SettingVM.PropertyChanged += (s, arg) =>
+            {
+                if (arg.PropertyName == "FilterNSFW")
+                {
+                    //VM.RefreshCmd.Execute(null);
+                }
+            };
+
+            PageDataContext.MapChanged += (s, arg) =>
+            {
+                if (arg.Key == MenuOpenedKey)
+                {
+                    if ((bool)PageDataContext[MenuOpenedKey])
+                    {
+                        _showMenu.Begin();
+                    }
+                    else
+                    {
+                        _hideMenu.Begin();
+                    }
+                }
+            };
+
+            PageDataContext[MenuOpenedKey] = AppPCL.SettingVM.OpenMenuOnStart;
         }
 
         /// <summary>
@@ -102,6 +153,62 @@ namespace PhotoGliderWindowsStore.Views
         }
 
         #endregion
+
+        private void ItemView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            VM.SelectedItem = (RedditImage)e.ClickedItem;
+            //this.Frame.Navigate(typeof(ItemDetailPage));
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0)
+            {
+                Debug.WriteLine(e.AddedItems[0].ToString());
+                var newSub = e.AddedItems[0].ToString();
+                VM.SubReddit = newSub;
+            }
+        }
+
+        private void Rectangle_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            PageDataContext[MenuOpenedKey] = !(bool)PageDataContext[MenuOpenedKey];
+        }
+
+        private void itemGridView_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if ((bool)PageDataContext[MenuOpenedKey])
+            {
+                PageDataContext[MenuOpenedKey] = false;
+            }
+        }
+
+        private void TextBox_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                var tb = (TextBox)sender;
+                tb.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+                //_menuAppName.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+            }
+        }
+
+        private void itemGridView_Loaded(object sender, RoutedEventArgs e)
+        {
+            var sv = itemGridView.GetFirstDescendantOfType<ScrollViewer>();
+
+            sv.ViewChanged += (s, arg) =>
+            {
+                // If this is because of changing sub reddit, do not hide the menu.
+                if (sv.HorizontalOffset != 0)
+                {
+                    if ((bool)PageDataContext[MenuOpenedKey])
+                    {
+                        PageDataContext[MenuOpenedKey] = false;
+                    }
+                }
+            };
+        }
     }
 
     public class ThumbnailTemplateSelector : DataTemplateSelector
@@ -111,11 +218,113 @@ namespace PhotoGliderWindowsStore.Views
         protected override DataTemplate SelectTemplateCore(object item)
         {
             var ri = (RedditImage)item;
-            if (ri.NSFW && App.SettingVM.FilterNSFW)
+            if (ri.NSFW && AppPCL.SettingVM.FilterNSFW)
             {
                 return NSFWTemplate;
             }
             return NormalTemplate;
+        }
+    }
+
+    public static class VisualTreeHelperExtensions
+    {
+        public static T GetFirstDescendantOfType<T>(this DependencyObject start) where T : DependencyObject
+        {
+            return start.GetDescendantsOfType<T>().FirstOrDefault();
+        }
+
+        public static IEnumerable<T> GetDescendantsOfType<T>(this DependencyObject start) where T : DependencyObject
+        {
+            return start.GetDescendants().OfType<T>();
+        }
+
+        public static IEnumerable<DependencyObject> GetDescendants(this DependencyObject start)
+        {
+            var queue = new Queue<DependencyObject>();
+            var count = VisualTreeHelper.GetChildrenCount(start);
+
+            for (int i = 0; i < count; i++)
+            {
+                var child = VisualTreeHelper.GetChild(start, i);
+                yield return child;
+                queue.Enqueue(child);
+            }
+
+            while (queue.Count > 0)
+            {
+                var parent = queue.Dequeue();
+                var count2 = VisualTreeHelper.GetChildrenCount(parent);
+
+                for (int i = 0; i < count2; i++)
+                {
+                    var child = VisualTreeHelper.GetChild(parent, i);
+                    yield return child;
+                    queue.Enqueue(child);
+                }
+            }
+        }
+
+        public static T GetFirstAncestorOfType<T>(this DependencyObject start) where T : DependencyObject
+        {
+            return start.GetAncestorsOfType<T>().FirstOrDefault();
+        }
+
+        public static IEnumerable<T> GetAncestorsOfType<T>(this DependencyObject start) where T : DependencyObject
+        {
+            return start.GetAncestors().OfType<T>();
+        }
+
+        public static IEnumerable<DependencyObject> GetAncestors(this DependencyObject start)
+        {
+            var parent = VisualTreeHelper.GetParent(start);
+
+            while (parent != null)
+            {
+                yield return parent;
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+        }
+
+        public static bool IsInVisualTree(this DependencyObject dob)
+        {
+            return Window.Current.Content != null && dob.GetAncestors().Contains(Window.Current.Content);
+        }
+
+        public static Rect GetBoundingRect(this FrameworkElement dob, FrameworkElement relativeTo = null)
+        {
+            if (relativeTo == null)
+            {
+                relativeTo = Window.Current.Content as FrameworkElement;
+            }
+
+            if (relativeTo == null)
+            {
+                throw new InvalidOperationException("Element not in visual tree.");
+            }
+
+            if (dob == relativeTo)
+                return new Rect(0, 0, relativeTo.ActualWidth, relativeTo.ActualHeight);
+
+            var ancestors = dob.GetAncestors().ToArray();
+
+            if (!ancestors.Contains(relativeTo))
+            {
+                throw new InvalidOperationException("Element not in visual tree.");
+            }
+
+            var pos =
+                dob
+                    .TransformToVisual(relativeTo)
+                    .TransformPoint(new Point());
+            var pos2 =
+                dob
+                    .TransformToVisual(relativeTo)
+                    .TransformPoint(
+                        new Point(
+                            dob.ActualWidth,
+                            dob.ActualHeight));
+
+            return new Rect(pos, pos2);
         }
     }
 }

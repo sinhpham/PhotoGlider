@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoGliderWindowsStore", "PhotoGliderWindowsStore\PhotoGliderWindowsStore.csproj", "{CF7587D6-C460-4B32-9F72-43526AED32A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoGliderPCL", "PhotoGliderPCL\PhotoGliderPCL.csproj", "{DC68517B-563D-4F5D-BF45-EAE0F882DCCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoGliderTest", "PhotoGliderTest\PhotoGliderTest.csproj", "{9BA3762C-9DF2-4B83-9757-C8736BC899F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,11 +61,21 @@ Global
 		{DC68517B-563D-4F5D-BF45-EAE0F882DCCF}.Release|x64.Build.0 = Release|Any CPU
 		{DC68517B-563D-4F5D-BF45-EAE0F882DCCF}.Release|x86.ActiveCfg = Release|Any CPU
 		{DC68517B-563D-4F5D-BF45-EAE0F882DCCF}.Release|x86.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = PhotoGliderWindowsStore\PhotoGliderWindowsStore.csproj
+		{9BA3762C-9DF2-4B83-9757-C8736BC899F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BA3762C-9DF2-4B83-9757-C8736BC899F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BA3762C-9DF2-4B83-9757-C8736BC899F6}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{9BA3762C-9DF2-4B83-9757-C8736BC899F6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9BA3762C-9DF2-4B83-9757-C8736BC899F6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9BA3762C-9DF2-4B83-9757-C8736BC899F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BA3762C-9DF2-4B83-9757-C8736BC899F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BA3762C-9DF2-4B83-9757-C8736BC899F6}.Release|ARM.ActiveCfg = Release|Any CPU
+		{9BA3762C-9DF2-4B83-9757-C8736BC899F6}.Release|x64.ActiveCfg = Release|Any CPU
+		{9BA3762C-9DF2-4B83-9757-C8736BC899F6}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = PhotoGliderWindowsStore\PhotoGliderWindowsStore.csproj
 	EndGlobalSection
 EndGlobal
