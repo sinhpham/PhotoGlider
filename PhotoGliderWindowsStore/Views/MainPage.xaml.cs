@@ -111,8 +111,8 @@ namespace PhotoGliderWindowsStore.Views
 
             if (_firstStart)
             {
-                AppPCL.Container.Register<IPaginatedCollection<RedditImage>>(() => new PaginatedCollection<RedditImage>(NetworkManager.LoadRedditImages));
-                VM.Images = AppPCL.Container.GetInstance<IPaginatedCollection<RedditImage>>();
+                AppPCL.Container.Register<ObservableCollection<RedditImage>>(() => new PaginatedCollection<RedditImage>(NetworkManager.LoadRedditImages));
+                VM.Images = AppPCL.Container.GetInstance<ObservableCollection<RedditImage>>();
                 _firstStart = false;
             }
 
@@ -348,7 +348,7 @@ namespace PhotoGliderWindowsStore.Views
         }
     }
 
-    public class PaginatedCollection<T> : ObservableCollection<T>, IPaginatedCollection<T>, ISupportIncrementalLoading
+    public class PaginatedCollection<T> : ObservableCollection<T>, ISupportIncrementalLoading
     {
         private Func<uint, Task<Tuple<IEnumerable<T>, string>>> load;
         public bool HasMoreItems { get; private set; }

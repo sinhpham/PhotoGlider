@@ -35,8 +35,8 @@ namespace PhotoGliderPCL.ViewModels
 
         public string RedditNextPath { get; set; }
 
-        private ICollection<RedditImage> _images;
-        public ICollection<RedditImage> Images
+        private ObservableCollection<RedditImage> _images;
+        public ObservableCollection<RedditImage> Images
         {
             get { return this._images; }
             set { SetProperty(ref _images, value); }
@@ -124,7 +124,7 @@ namespace PhotoGliderPCL.ViewModels
                     {
                         if (Images != null)
                         {
-                            Images = AppPCL.Container.GetInstance<IPaginatedCollection<RedditImage>>();
+                            Images = AppPCL.Container.GetInstance<ObservableCollection<RedditImage>>();
                             RedditNextPath = null;
                         }
                     });
@@ -248,11 +248,6 @@ namespace PhotoGliderPCL.ViewModels
             year,
             all
         }
-    }
-
-    public interface IPaginatedCollection<T> : ICollection<T>
-    {
-
     }
 
     public interface IOSFeatures
