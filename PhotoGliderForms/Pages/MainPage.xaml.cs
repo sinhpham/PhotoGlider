@@ -6,6 +6,7 @@ using PhotoGliderPCL.ViewModels;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using PhotoGliderPCL.Models;
+using Xamarin.Forms.Labs.Controls;
 
 namespace PhotoGliderForms
 {
@@ -15,19 +16,31 @@ namespace PhotoGliderForms
         {
             InitializeComponent();
 
+            AppPCL.MainVM.Images = new ObservableCollection<RedditImage>();
+
+            for (var i = 0; i < 30; ++i)
+            {
+                AppPCL.MainVM.Images.Add(new RedditImage() { Title = i.ToString() });
+            }
+
             BindingContext = AppPCL.MainVM;
 
-            Task.Run(async () =>
-            {
-                var res = await NetworkManager.LoadRedditImages(30);
-
-                VM.Images = new ObservableCollection<RedditImage>();
-
-                foreach (var img in res.Item1)
-                {
-                    VM.Images.Add(img);
-                }
-            });
+//            Task.Run(async () =>
+//            {
+//                //var res = await NetworkManager.LoadRedditImages(30);
+//
+//
+////
+////                Device.BeginInvokeOnMainThread(() => {
+////                    foreach (var img in res.Item1)
+////                    {
+////                        VM.Images.Add(img);
+////                    }
+////                    var a = 0;
+////                });
+//
+//
+//            });
         }
 
         public MainVM VM { get { return (MainVM)BindingContext; } }
