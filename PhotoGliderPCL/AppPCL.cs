@@ -20,7 +20,7 @@ namespace PhotoGliderPCL
 
         public static Page GetMainPage()
         {	
-            return null;
+            return new MainPage();
         }
 
         static MainVM _mainVM;
