@@ -57,4 +57,10 @@
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoGliderPCL\PhotoGliderPCL.csproj">
+      <Project>{DC68517B-563D-4F5D-BF45-EAE0F882DCCF}</Project>
+      <Name>PhotoGliderPCL</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

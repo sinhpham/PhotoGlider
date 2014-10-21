@@ -35,8 +35,8 @@ namespace PhotoGliderPCL.ViewModels
 
         public string RedditNextPath { get; set; }
 
-        private IPaginatedCollection<RedditImage> _images;
-        public IPaginatedCollection<RedditImage> Images
+        private ICollection<RedditImage> _images;
+        public ICollection<RedditImage> Images
         {
             get { return this._images; }
             set { SetProperty(ref _images, value); }
