@@ -13,20 +13,30 @@ namespace PhotoGliderPCL.Models
     public class InternetImage
     {
         public string ImageLink { get; set; }
+
         public string ThumbnailLink { get; set; }
     }
 
     public class RedditImage : NotifyingClass
     {
         InternetImage _displayingImage;
+
         public InternetImage DisplayingImage
         {
             get { return _displayingImage; }
-            set { SetProperty(ref _displayingImage, value); OnPropertyChanged("HasMultipleImages"); }
+            set
+            {
+                SetProperty(ref _displayingImage, value);
+                OnPropertyChanged("HasMultipleImages");
+            }
         }
+
         public string Title { get; set; }
+
         public string Permalink { get; set; }
+
         public string OriginalUrl { get; set; }
+
         public bool NSFW { get; set; }
 
         public List<InternetImage> GalleryImages { get; set; }
@@ -46,24 +56,22 @@ namespace PhotoGliderPCL.Models
         {
             var ret = new List<RedditImage>();
 
-            dynamic jsonObject = JObject.Parse(jsonText);
-            var jArr = jsonObject.data.children as JArray;
+            var jsonObject = JObject.Parse(jsonText);
+            var jArr = jsonObject["data"]["children"] as JArray;
 
             try
             {
-                nextPath = jsonObject.data.after;
+                nextPath = (string)jsonObject["data"]["after"];
             }
             catch (InvalidOperationException)
             {
                 nextPath = "null";
             }
 
-            var allRedditImages = Task.WhenAll(jArr.Select(async rawJVal =>
+            var allRedditImages = Task.WhenAll(jArr.Select(async itemJTok =>
             {
-                dynamic dJVal = (dynamic)rawJVal;
-
-                var itemDynamicObj = dJVal.data;
-                var tentativeThumbnail = (string)itemDynamicObj.thumbnail;
+                var dataJTok = itemJTok["data"];
+                var tentativeThumbnail = (string)dataJTok["thumbnail"];
 
                 if (!Uri.IsWellFormedUriString(tentativeThumbnail, UriKind.Absolute))
                 {
@@ -72,22 +80,22 @@ namespace PhotoGliderPCL.Models
 
                 var item = new RedditImage()
                 {
-                    Title = System.Net.WebUtility.HtmlDecode((string)itemDynamicObj.title),
-                    Permalink = "http://reddit.com" + (string)itemDynamicObj.permalink,
-                    OriginalUrl = (string)itemDynamicObj.url,
-                    NSFW = (bool)itemDynamicObj.over_18,
+                    Title = System.Net.WebUtility.HtmlDecode((string)dataJTok["title"]),
+                    Permalink = "http://reddit.com" + (string)dataJTok["permalink"],
+                    OriginalUrl = (string)dataJTok["url"],
+                    NSFW = (bool)dataJTok["over_18"],
                 };
 
                 // Parser task here to determine the correct image and album
                 Task.Run(async () =>
                 {
-                    var extractRet = await ImgUrlExtractor.Extract((string)itemDynamicObj.url);
+                    var extractRet = await ImgUrlExtractor.Extract((string)dataJTok["url"]);
                     var linkedImg = extractRet.Item1;
                     var galleryUrls = extractRet.Item2;
 
                     if (linkedImg != null && linkedImg.ThumbnailLink == null)
                     {
-                        linkedImg.ThumbnailLink = (string)itemDynamicObj.thumbnail;
+                        linkedImg.ThumbnailLink = (string)dataJTok["thumbnail"];
                     }
 
                     if (linkedImg == null && galleryUrls != null && galleryUrls.Count > 0)

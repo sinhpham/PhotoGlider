@@ -175,7 +175,7 @@ Global
 		{E7F0D3A5-FC91-4A9D-A93C-58E63C3E32A8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = PhotoGliderAndroid\PhotoGliderAndroid.csproj
+		StartupItem = PhotoGliderIOS\PhotoGliderIOS.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
