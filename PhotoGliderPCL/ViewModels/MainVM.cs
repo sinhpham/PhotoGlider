@@ -168,11 +168,7 @@ namespace PhotoGliderPCL.ViewModels
 
         public IEnumerable<RedditSortBy> SortByList
         {
-            get
-            {
-                return Enum.GetValues(typeof(RedditSortBy))
-                    .Cast<RedditSortBy>();
-            }
+            get { return Enum.GetValues(typeof(RedditSortBy)).Cast<RedditSortBy>(); }
         }
 
         RedditSortBy _sortBy;
@@ -182,6 +178,33 @@ namespace PhotoGliderPCL.ViewModels
             set
             {
                 if (SetProperty(ref _sortBy, value))
+                {
+                    ShouldDisplaySortByTime = SortBy == RedditSortBy.Top || SortBy == RedditSortBy.Controversial ? true : false;
+
+                    RefreshCmd.Execute(null);
+                }
+            }
+        }
+
+        bool _shouldDisplaySortByTime;
+        public bool ShouldDisplaySortByTime
+        {
+            get { return _shouldDisplaySortByTime; }
+            set { SetProperty(ref _shouldDisplaySortByTime, value); }
+        }
+
+        public IEnumerable<RedditSortByTime> SortByTimeList
+        {
+            get { return Enum.GetValues(typeof(RedditSortByTime)).Cast<RedditSortByTime>(); }
+        }
+
+        RedditSortByTime _sortByTime;
+        public RedditSortByTime SortByTime
+        {
+            get { return _sortByTime; }
+            set
+            {
+                if (SetProperty(ref _sortByTime, value))
                 {
                     RefreshCmd.Execute(null);
                 }
