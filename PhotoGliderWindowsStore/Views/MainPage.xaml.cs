@@ -240,9 +240,11 @@ namespace PhotoGliderWindowsStore.Views
 
             var subRedditLinkPortion = VM.SubReddit.StartsWith("user/") ? VM.SubReddit : string.Format("r/{0}", VM.SubReddit);
 
+            
+
             var link = collection.NextPath != null ?
-                string.Format("http://www.reddit.com/{0}/new.json?after={1}&limit={2}", subRedditLinkPortion, collection.NextPath, count) :
-                string.Format("http://www.reddit.com/{0}/new.json?limit={1}", subRedditLinkPortion, count);
+                string.Format("http://www.reddit.com/{0}/{1}.json?after={2}&limit={3}", subRedditLinkPortion, VM.SortBy.ToString().ToLower(), collection.NextPath, count) :
+                string.Format("http://www.reddit.com/{0}/{1}.json?limit={2}", subRedditLinkPortion, VM.SortBy.ToString().ToLower(), count);
 
             var hc = new HttpClient();
             string jsonText = null;

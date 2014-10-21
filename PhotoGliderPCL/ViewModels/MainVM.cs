@@ -166,6 +166,28 @@ namespace PhotoGliderPCL.ViewModels
             }
         }
 
+        public IEnumerable<RedditSortBy> SortByList
+        {
+            get
+            {
+                return Enum.GetValues(typeof(RedditSortBy))
+                    .Cast<RedditSortBy>();
+            }
+        }
+
+        RedditSortBy _sortBy;
+        public RedditSortBy SortBy
+        {
+            get { return _sortBy; }
+            set
+            {
+                if (SetProperty(ref _sortBy, value))
+                {
+                    RefreshCmd.Execute(null);
+                }
+            }
+        }
+
         ObservableCollection<string> _subReddits = new ObservableCollection<string>();
         public ObservableCollection<string> SubReddits
         {
@@ -181,6 +203,24 @@ namespace PhotoGliderPCL.ViewModels
             {
                 eh(this, EventArgs.Empty);
             }
+        }
+
+        public enum RedditSortBy
+        {
+            Hot,
+            New,
+            Top,
+            Controversial,
+        }
+
+        public enum RedditSortByTime
+        {
+            hour,
+            day,
+            week,
+            month,
+            year,
+            all
         }
     }
 
