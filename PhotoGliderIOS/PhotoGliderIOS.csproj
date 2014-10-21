@@ -121,5 +121,9 @@
       <Project>{DC68517B-563D-4F5D-BF45-EAE0F882DCCF}</Project>
       <Name>PhotoGliderPCL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PhotoGliderForms\PhotoGliderForms.csproj">
+      <Project>{369E5302-6587-4C6A-B330-F172A54C1FDE}</Project>
+      <Name>PhotoGliderForms</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

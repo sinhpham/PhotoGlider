@@ -18,11 +18,6 @@ namespace PhotoGliderPCL
 
         public static Container Container { get; set; }
 
-        public static Page GetMainPage()
-        {	
-            return new MainPage();
-        }
-
         static MainVM _mainVM;
         public static MainVM MainVM
         {

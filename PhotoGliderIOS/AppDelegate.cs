@@ -6,6 +6,7 @@ using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using Xamarin.Forms;
 using PhotoGliderPCL;
+using PhotoGliderForms;
 
 namespace PhotoGliderIOS
 {
@@ -32,7 +33,7 @@ namespace PhotoGliderIOS
             window = new UIWindow(UIScreen.MainScreen.Bounds);
 			
             // If you have defined a root view controller, set it here:
-            window.RootViewController =  AppPCL.GetMainPage().CreateViewController();
+            window.RootViewController =  AppForms.GetMainPage().CreateViewController();
 			
             // make the window visible
             window.MakeKeyAndVisible();

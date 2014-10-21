@@ -9,6 +9,7 @@ using Android.OS;
 using Xamarin.Forms;
 using PhotoGliderPCL;
 using Xamarin.Forms.Platform.Android;
+using PhotoGliderForms;
 
 namespace PhotoGliderAndroid
 {
@@ -21,7 +22,7 @@ namespace PhotoGliderAndroid
 
             Forms.Init(this, bundle);
 
-            SetPage(AppPCL.GetMainPage());
+            SetPage(AppForms.GetMainPage());
         }
     }
 }
