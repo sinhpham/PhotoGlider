@@ -238,16 +238,29 @@ namespace PhotoGliderWindowsStore.Views
                 return retList;
             }
 
+            var subRedditLinkPortion = VM.SubReddit.StartsWith("user/") ? VM.SubReddit : string.Format("r/{0}", VM.SubReddit);
+
             var link = collection.NextPath != null ?
-                string.Format("http://www.reddit.com/r/{0}/new.json?after={1}&limit={2}", VM.SubReddit, collection.NextPath, count) :
-                string.Format("http://www.reddit.com/r/{0}/new.json?limit={1}", VM.SubReddit, count);
+                string.Format("http://www.reddit.com/{0}/new.json?after={1}&limit={2}", subRedditLinkPortion, collection.NextPath, count) :
+                string.Format("http://www.reddit.com/{0}/new.json?limit={1}", subRedditLinkPortion, count);
 
             var hc = new HttpClient();
-            var jsonText = await hc.GetStringAsync(link);
+            string jsonText = null;
+            try
+            {
+                jsonText = await hc.GetStringAsync(link);
+            }
+            catch (Exception)
+            {
 
-            string newNextPath;
-            retList = RedditImageParser.ParseFromJson(jsonText, out newNextPath);
-            collection.NextPath = newNextPath;
+            }
+
+            if (jsonText != null)
+            {
+                string newNextPath;
+                retList = RedditImageParser.ParseFromJson(jsonText, out newNextPath);
+                collection.NextPath = newNextPath;
+            }
 
             return retList;
         }
