@@ -1,4 +1,5 @@
 ﻿using PhotoGliderPCL.ViewModels;
+using SimpleInjector;
 using System;
 using Xamarin.Forms;
 
@@ -6,6 +7,13 @@ namespace PhotoGliderPCL
 {
     public class AppPCL
     {
+        static AppPCL()
+        {
+            Container = new Container();
+        }
+
+        public static Container Container { get; set; }
+
         public static Page GetMainPage()
         {	
             return new ContentPage

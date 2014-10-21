@@ -181,6 +181,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Xam.Plugins.Settings.1.3.0.0\lib\win8\Refractored.Xam.Settings.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="SimpleInjector">
+      <HintPath>..\packages\SimpleInjector.2.6.0\lib\portable-net4+sl4+wp8+win8+wpa81\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Diagnostics">
+      <HintPath>..\packages\SimpleInjector.2.6.0\lib\portable-net4+sl4+wp8+win8+wpa81\SimpleInjector.Diagnostics.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

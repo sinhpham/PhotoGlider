@@ -124,7 +124,10 @@ namespace PhotoGliderPCL.ViewModels
                 {
                     _refreshCmd = new Command(() =>
                     {
-                        //Images = new ObservableCollection<RedditImage>();
+                        if (Images != null)
+                        {
+                            Images = AppPCL.Container.GetInstance<IPaginatedCollection<RedditImage>>();
+                        }
                     });
                 }
                 return _refreshCmd;
