@@ -63,6 +63,7 @@ namespace PhotoGliderWindowsStore.Views
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += navigationHelper_LoadState;
             this.navigationHelper.SaveState += navigationHelper_SaveState;
+            this.NavigationCacheMode = NavigationCacheMode.Enabled;
 
             VM.PropertyChanged += (s, arg) =>
             {
@@ -108,11 +109,11 @@ namespace PhotoGliderWindowsStore.Views
 
             PageDataContext[MenuOpenedKey] = AppPCL.SettingVM.OpenMenuOnStart;
 
-            if (_needRegister)
+            if (_firstStart)
             {
                 AppPCL.Container.Register<IPaginatedCollection<RedditImage>>(() => new PaginatedCollection<RedditImage>(LoadRedditImages));
                 VM.Images = AppPCL.Container.GetInstance<IPaginatedCollection<RedditImage>>();
-                _needRegister = false;
+                _firstStart = false;
             }
 
             RedditImageParser.RunOnUiThread = act =>
@@ -121,7 +122,7 @@ namespace PhotoGliderWindowsStore.Views
             };
         }
 
-        static bool _needRegister = true;
+        static bool _firstStart = true;
 
         /// <summary>
         /// Populates the page with content passed during navigation. Any saved state is also

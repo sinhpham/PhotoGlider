@@ -96,8 +96,6 @@ namespace PhotoGliderPCL.Models
                     }
 
                     // Modify UI, so need to run this on UI thread.
-                    //CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    //{
                     if (RunOnUiThread != null)
                     {
                         RunOnUiThread(() =>
@@ -105,9 +103,6 @@ namespace PhotoGliderPCL.Models
                             item.DisplayingImage = linkedImg;
                         });
                     }
-                        
-                    
-                    //}//);
 
                     item.GalleryImages = galleryUrls;
                 });

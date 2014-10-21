@@ -1,4 +1,7 @@
-﻿using PhotoGliderWindowsStore.Views;
+﻿using PhotoGliderPCL;
+using PhotoGliderPCL.ViewModels;
+using PhotoGliderWindowsStore.Implementations;
+using PhotoGliderWindowsStore.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,6 +37,8 @@ namespace PhotoGliderWindowsStore
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            AppPCL.Container.RegisterSingle<IOSFeatures>(new OSFeatures());
         }
 
         protected override void OnWindowCreated(WindowCreatedEventArgs args)

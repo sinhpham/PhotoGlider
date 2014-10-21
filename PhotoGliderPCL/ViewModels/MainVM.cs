@@ -56,9 +56,7 @@ namespace PhotoGliderPCL.ViewModels
                 {
                     _copyLinkCmd = new Command(() =>
                     {
-                        //var dp = new Windows.ApplicationModel.DataTransfer.DataPackage();
-                        //dp.SetText(SelectedItem.OriginalUrl);
-                        //Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dp);
+                        AppPCL.Container.GetInstance<IOSFeatures>().CopyToClipboard(SelectedItem.OriginalUrl);
                     });
                 }
                 return _copyLinkCmd;
@@ -74,9 +72,7 @@ namespace PhotoGliderPCL.ViewModels
                 {
                     _copyRedditLinkCmd = new Command(() =>
                     {
-                        //var dp = new Windows.ApplicationModel.DataTransfer.DataPackage();
-                        //dp.SetText(SelectedItem.Permalink);
-                        //Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dp);
+                        AppPCL.Container.GetInstance<IOSFeatures>().CopyToClipboard(SelectedItem.Permalink);
                     });
                 }
                 return _copyRedditLinkCmd;
@@ -92,7 +88,7 @@ namespace PhotoGliderPCL.ViewModels
                 {
                     _openLinkCmd = new Command(() =>
                     {
-                        //Windows.System.Launcher.LaunchUriAsync(new Uri(SelectedItem.OriginalUrl));
+                        AppPCL.Container.GetInstance<IOSFeatures>().OpenLink(SelectedItem.OriginalUrl);
                     });
                 }
                 return _openLinkCmd;
@@ -108,7 +104,7 @@ namespace PhotoGliderPCL.ViewModels
                 {
                     _openRedditLinkCmd = new Command(() =>
                     {
-                        //Windows.System.Launcher.LaunchUriAsync(new Uri(SelectedItem.Permalink));
+                        AppPCL.Container.GetInstance<IOSFeatures>().OpenLink(SelectedItem.Permalink);
                     });
                 }
                 return _openRedditLinkCmd;
@@ -191,5 +187,11 @@ namespace PhotoGliderPCL.ViewModels
     public interface IPaginatedCollection<T> : ICollection<T>
     {
 
+    }
+
+    public interface IOSFeatures
+    {
+        void OpenLink(string uriString);
+        void CopyToClipboard(string str);
     }
 }
