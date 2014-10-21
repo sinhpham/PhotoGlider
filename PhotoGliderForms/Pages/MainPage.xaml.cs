@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Xamarin.Forms;
 
-namespace PhotoGliderPCL
+namespace PhotoGliderForms
 {	
 	public partial class MainPage : ContentPage
 	{	
