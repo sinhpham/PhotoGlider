@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PhotoGliderWindowsStore.Views;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ApplicationSettings;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -34,6 +36,31 @@ namespace PhotoGliderWindowsStore
             this.Suspending += OnSuspending;
         }
 
+        protected override void OnWindowCreated(WindowCreatedEventArgs args)
+        {
+            SettingsPane.GetForCurrentView().CommandsRequested += (s, e) =>
+            {
+                var generalSettingCmd = new SettingsCommand("general", "General", handler =>
+                {
+                    var sf = new AppSettingsFlyout();
+                    sf.Show();
+                });
+                var aboutSettingCmd = new SettingsCommand("about", "About", handler =>
+                {
+                    var about = new AboutSettingFlyout();
+                    about.Show();
+                });
+                var ppSettingCmd = new SettingsCommand("pp", "Privacy Policy", handler =>
+                {
+                    Windows.System.Launcher.LaunchUriAsync(new Uri("http://sinhpham.github.io/PhotoGlider/"));
+                });
+                e.Request.ApplicationCommands.Add(generalSettingCmd);
+                e.Request.ApplicationCommands.Add(aboutSettingCmd);
+                e.Request.ApplicationCommands.Add(ppSettingCmd);
+            };
+
+            base.OnWindowCreated(args);
+        }
         
 
         /// <summary>
