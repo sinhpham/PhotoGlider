@@ -33,6 +33,8 @@ namespace PhotoGliderPCL.ViewModels
             }
         }
 
+        public string RedditNextPath { get; set; }
+
         private IPaginatedCollection<RedditImage> _images;
         public IPaginatedCollection<RedditImage> Images
         {
@@ -123,6 +125,7 @@ namespace PhotoGliderPCL.ViewModels
                         if (Images != null)
                         {
                             Images = AppPCL.Container.GetInstance<IPaginatedCollection<RedditImage>>();
+                            RedditNextPath = null;
                         }
                     });
                 }

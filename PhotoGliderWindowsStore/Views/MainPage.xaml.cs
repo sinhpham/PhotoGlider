@@ -111,7 +111,7 @@ namespace PhotoGliderWindowsStore.Views
 
             if (_firstStart)
             {
-                AppPCL.Container.Register<IPaginatedCollection<RedditImage>>(() => new PaginatedCollection<RedditImage>(LoadRedditImages));
+                AppPCL.Container.Register<IPaginatedCollection<RedditImage>>(() => new PaginatedCollection<RedditImage>(NetworkManager.LoadRedditImages));
                 VM.Images = AppPCL.Container.GetInstance<IPaginatedCollection<RedditImage>>();
                 _firstStart = false;
             }
@@ -228,43 +228,6 @@ namespace PhotoGliderWindowsStore.Views
                     }
                 }
             };
-        }
-
-        async Task<IEnumerable<RedditImage>> LoadRedditImages(PaginatedCollection<RedditImage> collection, uint count)
-        {
-            var retList = new List<RedditImage>();
-            if (string.Equals("null", collection.NextPath, StringComparison.Ordinal))
-            {
-                return retList;
-            }
-
-            var subRedditLinkPortion = VM.SubReddit.StartsWith("user/") ? VM.SubReddit : string.Format("r/{0}", VM.SubReddit);
-
-            
-
-            var link = collection.NextPath != null ?
-                string.Format("http://www.reddit.com/{0}/{1}.json?after={2}&limit={3}", subRedditLinkPortion, VM.SortBy.ToString().ToLower(), collection.NextPath, count) :
-                string.Format("http://www.reddit.com/{0}/{1}.json?limit={2}", subRedditLinkPortion, VM.SortBy.ToString().ToLower(), count);
-
-            var hc = new HttpClient();
-            string jsonText = null;
-            try
-            {
-                jsonText = await hc.GetStringAsync(link);
-            }
-            catch (Exception)
-            {
-
-            }
-
-            if (jsonText != null)
-            {
-                string newNextPath;
-                retList = RedditImageParser.ParseFromJson(jsonText, out newNextPath);
-                collection.NextPath = newNextPath;
-            }
-
-            return retList;
         }
     }
 
@@ -387,12 +350,10 @@ namespace PhotoGliderWindowsStore.Views
 
     public class PaginatedCollection<T> : ObservableCollection<T>, IPaginatedCollection<T>, ISupportIncrementalLoading
     {
-        private Func<PaginatedCollection<T>, uint, Task<IEnumerable<T>>> load;
+        private Func<uint, Task<Tuple<IEnumerable<T>, string>>> load;
         public bool HasMoreItems { get; private set; }
 
-        public string NextPath { get; set; }
-
-        public PaginatedCollection(Func<PaginatedCollection<T>, uint, Task<IEnumerable<T>>> load)
+        public PaginatedCollection(Func<uint, Task<Tuple<IEnumerable<T>, string>>> load)
         {
             HasMoreItems = true;
             this.load = load;
@@ -402,18 +363,19 @@ namespace PhotoGliderWindowsStore.Views
         {
             return AsyncInfo.Run(async c =>
             {
-                var data = await load(this, count);
+                var data = await load(count);
+                AppPCL.MainVM.RedditNextPath = data.Item2;
 
-                foreach (var item in data)
+                foreach (var item in data.Item1)
                 {
                     Add(item);
                 }
 
-                HasMoreItems = data.Any();
+                HasMoreItems = data.Item1.Any();
 
                 return new LoadMoreItemsResult()
                 {
-                    Count = (uint)data.Count(),
+                    Count = (uint)data.Item1.Count(),
                 };
             });
         }
