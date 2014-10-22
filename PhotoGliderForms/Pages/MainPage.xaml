@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:controls="clr-namespace:Xamarin.Forms.Labs.Controls;assembly=Xamarin.Forms.Labs" x:Class="PhotoGliderForms.MainPage">
-	<ContentPage.Content>
-		<!--		<controls:GridView x:Name="grdView" RowSpacing="5" Padding="5" ColumnSpacing="5" ItemWidth="152" ItemHeight="200" ItemsSource="{Binding Images}">
-			<controls:GridView.ItemTemplate>
-				<DataTemplate>
-					<ViewCell>
-						<ViewCell.View>
-							<BoxView WidthRequest="30" HeightRequest="30" Color="Blue"/>
-						</ViewCell.View>
-					</ViewCell>
-				</DataTemplate>
-			</controls:GridView.ItemTemplate>
-		</controls:GridView>-->
-		<ListView ItemsSource="{Binding Images}">
+  <ContentPage.Content>
+    <controls:GridView x:Name="grdView" RowSpacing="5" Padding="5" ColumnSpacing="5" ItemWidth="152" ItemHeight="200" ItemsSource="{Binding Images}">
+      <controls:GridView.ItemTemplate>
+        <DataTemplate>
+          <ViewCell>
+            <ViewCell.View>
+              <BoxView WidthRequest="30" HeightRequest="30" Color="Blue"/>
+            </ViewCell.View>
+          </ViewCell>
+        </DataTemplate>
+      </controls:GridView.ItemTemplate>
+    </controls:GridView>
+    <!--<ListView ItemsSource="{Binding Images}">
 			<ListView.ItemTemplate>
 				<DataTemplate>
 					<TextCell Text="{Binding Title}" />
 				</DataTemplate>
 			</ListView.ItemTemplate>
-		</ListView>
-	</ContentPage.Content>
+		</ListView>-->
+  </ContentPage.Content>
 </ContentPage>

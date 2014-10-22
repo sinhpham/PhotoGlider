@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace PhotoGliderPCL.Models
 {
@@ -107,6 +108,13 @@ namespace PhotoGliderPCL.Models
                     if (RunOnUiThread != null)
                     {
                         RunOnUiThread(() =>
+                        {
+                            item.DisplayingImage = linkedImg;
+                        });
+                    }
+                    else
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
                         {
                             item.DisplayingImage = linkedImg;
                         });

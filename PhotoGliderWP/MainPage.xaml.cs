@@ -10,6 +10,12 @@ using Microsoft.Phone.Shell;
 using PhotoGliderWP.Resources;
 using Xamarin.Forms;
 using PhotoGliderForms;
+using PhotoGliderPCL;
+using System.Collections.ObjectModel;
+using PhotoGliderPCL.Models;
+using System.Threading.Tasks;
+using PhotoGliderPCL.ViewModels;
+using System.Diagnostics;
 
 namespace PhotoGliderWP
 {
@@ -19,9 +25,59 @@ namespace PhotoGliderWP
         public MainPage()
         {
             InitializeComponent();
-
             Forms.Init();
-            Content = AppForms.GetMainPage().ConvertPageToUIElement(this);
+            AppPCL.MainVM.Images = new ObservableCollection<RedditImage>();
+
+            DataContext = AppPCL.MainVM;
+
+            IsLoading = true;
+            Task.Run(async () =>
+            {
+                var res = await NetworkManager.LoadRedditImages(30);
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    VM.RedditNextPath = res.Item2;
+                    foreach (var img in res.Item1)
+                    {
+                        VM.Images.Add(img);
+                    }
+                    IsLoading = false;
+                });
+
+            });
+        }
+
+        public MainVM VM { get { return (MainVM)DataContext; } }
+
+        bool IsLoading { get; set; }
+        int _offsetKnob = 7;
+        private void LongListSelector_ItemRealized(object sender, ItemRealizationEventArgs e)
+        {
+            var lls = (LongListSelector)sender;
+            if (!IsLoading && lls.ItemsSource != null && lls.ItemsSource.Count >= _offsetKnob)
+            {
+                if (e.ItemKind == LongListSelectorItemKind.Item)
+                {
+                    if ((e.Container.Content as RedditImage).Equals(lls.ItemsSource[lls.ItemsSource.Count - _offsetKnob]))
+                    {
+                        Debug.WriteLine("Searching for {0}", VM.RedditNextPath);
+                        IsLoading = true;
+                        Task.Run(async () =>
+                        {
+                            var res = await NetworkManager.LoadRedditImages(30);
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                VM.RedditNextPath = res.Item2;
+                                foreach (var img in res.Item1)
+                                {
+                                    VM.Images.Add(img);
+                                }
+                                IsLoading = false;
+                            });
+                        });
+                    }
+                }
+            }
         }
 
         // Sample code for building a localized ApplicationBar
