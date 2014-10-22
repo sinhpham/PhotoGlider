@@ -92,7 +92,7 @@
             <!--TitlePanel contains the name of the application and page title-->
 
             <Grid x:Name="ContentPanel" >
-                <phone:LongListSelector Name="_mainList" ItemsSource="{Binding Images}" LayoutMode="Grid" ItemRealized="LongListSelector_ItemRealized">
+                <phone:LongListSelector Name="_mainList" ItemsSource="{Binding Images}" SelectionChanged="_mainList_SelectionChanged" LayoutMode="Grid" ItemRealized="LongListSelector_ItemRealized">
                     <phone:LongListSelector.Resources>
                         <DataTemplate x:Key="DataTemplate1">
                             <Grid>

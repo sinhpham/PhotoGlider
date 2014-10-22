@@ -98,5 +98,18 @@ namespace PhotoGliderWP.Views
                 _slideView.SelectedIndex = 1;
             }
         }
+
+        private void _mainList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_mainList.SelectedItem == null)
+                return;
+
+            VM.SelectedItem = (RedditImage)_mainList.SelectedItem;
+            NavigationService.Navigate(new Uri("/Views/ItemPage.xaml", UriKind.Relative));
+
+            // Reset selected item to null (no selection)
+            _mainList.SelectedItem = null;
+            
+        }
     }
 }
