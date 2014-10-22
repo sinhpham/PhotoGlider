@@ -47,7 +47,7 @@ namespace PhotoGliderWP.Views
                 {
                     if ((e.Container.Content as RedditImage).Equals(lls.ItemsSource[lls.ItemsSource.Count - _offsetKnob]))
                     {
-                        Debug.WriteLine("Searching for {0}", VM.RedditNextPath);
+                        Debug.WriteLine("Loading after {0}", VM.RedditNextPath);
                         LoadData();
                     }
                 }
@@ -59,7 +59,7 @@ namespace PhotoGliderWP.Views
             IsLoading = true;
             Task.Run(async () =>
             {
-                var res = await NetworkManager.LoadRedditImages(30);
+                var res = await NetworkManager.LoadRedditImages(50);
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     VM.RedditNextPath = res.Item2;

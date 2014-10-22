@@ -11,12 +11,25 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <Image Source="{Binding SelectedItem.DisplayingImage.ImageLink}"/>
-
+        <ViewportControl x:Name="_viewport"
+                         ManipulationStarted="OnManipulationStarted"
+                         ManipulationDelta="OnManipulationDelta"
+                         ManipulationCompleted="OnManipulationCompleted"
+                         ViewportChanged="viewport_ViewportChanged">
+            <Canvas x:Name="_canvas">
+                <Image x:Name="_image" Source="{Binding SelectedItem.DisplayingImage.ImageLink}"
+                       RenderTransformOrigin="0,0" CacheMode="BitmapCache"
+                       ImageOpened="OnImageOpened">
+                    <Image.RenderTransform>
+                        <ScaleTransform x:Name="xform"/>
+                    </Image.RenderTransform>
+                </Image>
+            </Canvas>
+        </ViewportControl>
     </Grid>
 
 </phone:PhoneApplicationPage>
