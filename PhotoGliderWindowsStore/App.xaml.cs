@@ -1,9 +1,11 @@
 ﻿using PhotoGliderPCL;
+using PhotoGliderPCL.Models;
 using PhotoGliderPCL.ViewModels;
 using PhotoGliderWindowsStore.Implementations;
 using PhotoGliderWindowsStore.Views;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -39,6 +41,9 @@ namespace PhotoGliderWindowsStore
             this.Suspending += OnSuspending;
 
             AppPCL.Container.RegisterSingle<IOSFeatures>(new OSFeatures());
+
+            AppPCL.Container.Register<ObservableCollection<RedditImage>>(() => new PaginatedCollection<RedditImage>(NetworkManager.LoadRedditImages));
+            AppPCL.MainVM.Images = AppPCL.Container.GetInstance<ObservableCollection<RedditImage>>();
         }
 
         protected override void OnWindowCreated(WindowCreatedEventArgs args)

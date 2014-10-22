@@ -109,20 +109,11 @@ namespace PhotoGliderWindowsStore.Views
 
             PageDataContext[MenuOpenedKey] = AppPCL.SettingVM.OpenMenuOnStart;
 
-            if (_firstStart)
-            {
-                AppPCL.Container.Register<ObservableCollection<RedditImage>>(() => new PaginatedCollection<RedditImage>(NetworkManager.LoadRedditImages));
-                VM.Images = AppPCL.Container.GetInstance<ObservableCollection<RedditImage>>();
-                _firstStart = false;
-            }
-
             RedditImageParser.RunOnUiThread = act =>
             {
                 CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => act());
             };
         }
-
-        static bool _firstStart = true;
 
         /// <summary>
         /// Populates the page with content passed during navigation. Any saved state is also
