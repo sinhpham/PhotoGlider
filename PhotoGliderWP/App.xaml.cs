@@ -7,6 +7,9 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using PhotoGliderWP.Resources;
+using PhotoGliderPCL;
+using System.Collections.ObjectModel;
+using PhotoGliderPCL.Models;
 
 namespace PhotoGliderWP
 {
@@ -61,6 +64,7 @@ namespace PhotoGliderWP
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            AppPCL.Container.Register<ObservableCollection<RedditImage>>(() => new ObservableCollection<RedditImage>());
         }
 
         // Code to execute when the application is activated (brought to foreground)
