@@ -188,6 +188,9 @@
     <Reference Include="SimpleInjector.Diagnostics">
       <HintPath>..\packages\SimpleInjector.2.6.0\lib\portable-net4+sl4+wp8+win8+wpa81\SimpleInjector.Diagnostics.dll</HintPath>
     </Reference>
+    <Reference Include="WinRTXamlToolkit">
+      <HintPath>..\packages\WinRTXamlToolkit.Windows.1.7.4.0\lib\netcore451\WinRTXamlToolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

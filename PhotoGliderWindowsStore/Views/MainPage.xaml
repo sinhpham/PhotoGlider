@@ -6,6 +6,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PhotoGliderWindowsStore.Views"
     xmlns:common="using:PhotoGliderWindowsStore.Common"
+    xmlns:toolkit="using:WinRTXamlToolkit.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -201,7 +202,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock Text="Photo Glider" FontSize="32" Margin="26,20,25,0" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
-            <ListView Name="_subList" Grid.Row="1" ItemsSource="{Binding SubReddits}" SelectionChanged="ListView_SelectionChanged" Grid.ColumnSpan="2" CanReorderItems="True" AllowDrop="True">
+            <ListView Name="_subList" Grid.Row="1" ItemsSource="{Binding Images}" SelectionChanged="ListView_SelectionChanged" Grid.ColumnSpan="2" CanReorderItems="True" AllowDrop="True">
                 <ListView.Resources>
                     <Style x:Key="ListViewItemStyle1" TargetType="ListViewItem">
                         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
@@ -265,11 +266,11 @@
             ItemClick="ItemView_ItemClick" Margin="0,0,-10,0" Tapped="itemGridView_Tapped" Loaded="itemGridView_Loaded">
                 <GridView.Resources>
                     <DataTemplate x:Key="DataTemplate1">
-                        <Grid HorizontalAlignment="Left" Height="180">
+                        <Grid HorizontalAlignment="Left">
                             <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
-                                <Image Source="{Binding DisplayingImage.ThumbnailLink}" Stretch="Uniform"/>
+                                <Image Source="{Binding DisplayingImage.ThumbnailLink}" Stretch="Uniform" Width="150"/>
                             </Border>
-                            <Border HorizontalAlignment="Left" VerticalAlignment="Top" Background="#333D3D3D" >
+                            <Border Background="#333D3D3D" >
                                 <TextBlock Visibility="{Binding HasMultipleImages, Converter={StaticResource BooleanToVisibilityConverter}}" FontFamily="Segoe UI Symbol" Text="&#xE154;" FontSize="32"/>
                             </Border>
                         </Grid>
@@ -284,13 +285,17 @@
                     <local:ThumbnailTemplateSelector NormalTemplate="{StaticResource DataTemplate1}" NSFWTemplate="{StaticResource DataTemplate3}" x:Key="templateSelector" />
                 </GridView.Resources>
 
-                <GridView.ItemTemplateSelector>
+                <!--<GridView.ItemTemplateSelector>
                     <StaticResource ResourceKey="templateSelector"/>
-                </GridView.ItemTemplateSelector>
+                </GridView.ItemTemplateSelector>-->
+                
+                <GridView.ItemTemplate>
+                    <StaticResource ResourceKey="DataTemplate1"/>
+                </GridView.ItemTemplate>
                 
                 <GridView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <ItemsStackPanel Orientation="Horizontal"/>
+                        <toolkit:WrapPanel Orientation="Vertical" Background="Red"/>
                     </ItemsPanelTemplate>
                 </GridView.ItemsPanel>
             </GridView>
