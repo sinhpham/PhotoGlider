@@ -268,7 +268,7 @@
                     <DataTemplate x:Key="DataTemplate1">
                         <Grid HorizontalAlignment="Left">
                             <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
-                                <Image Source="{Binding DisplayingImage.ThumbnailLink}" Stretch="Uniform" Width="150"/>
+                                <Image Source="{Binding DisplayingImage.ThumbnailLink}" Stretch="Uniform"/>
                             </Border>
                             <Border Background="#333D3D3D" >
                                 <TextBlock Visibility="{Binding HasMultipleImages, Converter={StaticResource BooleanToVisibilityConverter}}" FontFamily="Segoe UI Symbol" Text="&#xE154;" FontSize="32"/>
@@ -295,7 +295,7 @@
                 
                 <GridView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <toolkit:WrapPanel Orientation="Vertical" Background="Red"/>
+                        <local:ImageGalleryPanel/>
                     </ItemsPanelTemplate>
                 </GridView.ItemsPanel>
             </GridView>

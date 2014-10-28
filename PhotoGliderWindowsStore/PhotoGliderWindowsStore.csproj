@@ -125,6 +125,7 @@
     <Compile Include="Views\AppSettingsFlyout.xaml.cs">
       <DependentUpon>AppSettingsFlyout.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ImageGalleryPanel.cs" />
     <Compile Include="Views\ItemDetailPage.xaml.cs">
       <DependentUpon>ItemDetailPage.xaml</DependentUpon>
     </Compile>
