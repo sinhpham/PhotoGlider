@@ -11,11 +11,25 @@ using Xamarin.Forms;
 
 namespace PhotoGliderPCL.Models
 {
-    public class InternetImage
+    public class InternetImage : NotifyingClass
     {
         public string ImageLink { get; set; }
 
         public string ThumbnailLink { get; set; }
+
+        double _tWidth;
+        public double ThumbnailWidth
+        {
+            get { return _tWidth; }
+            set { SetProperty(ref _tWidth, value); }
+        }
+
+        double _tHeight;
+        public double ThumbnailHeight
+        {
+            get { return _tHeight; }
+            set { SetProperty(ref _tHeight, value); }
+        }
     }
 
     public class RedditImage : NotifyingClass
