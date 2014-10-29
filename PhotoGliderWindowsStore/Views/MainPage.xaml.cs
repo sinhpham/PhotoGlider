@@ -114,6 +114,35 @@ namespace PhotoGliderWindowsStore.Views
             {
                 CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => act());
             };
+
+            var cc = new ObservableCollection<ImagesColCollection>();
+            //cc.Add(new ImagesColCollection() { Width = 200 });
+            //cc.Add(new ImagesColCollection() { Width = 500 });
+            //cc.Add(new ImagesColCollection() { Width = 300 });
+
+            PageDataContext["ImageGallery"] = cc;
+
+            VM.Images.CollectionChanged += (s, e) =>
+            {
+                ImagesColCollection currCol = null;
+                if (cc.Count > 0)
+                {
+                    currCol = cc[cc.Count - 1];
+                }
+                else
+                {
+                    currCol = new ImagesColCollection() { Width = 300 };
+                    cc.Add(currCol);
+                }
+
+                if (currCol.Images.Count > 5)
+                {
+                    currCol = new ImagesColCollection() { Width = 300 };
+                    cc.Add(currCol);
+                }
+
+                currCol.Images.Add((RedditImage)e.NewItems[0]);
+            };
         }
 
         /// <summary>
@@ -268,6 +297,22 @@ namespace PhotoGliderWindowsStore.Views
                     Count = (uint)data.Item1.Count(),
                 };
             });
+        }
+    }
+
+    public class ImagesColCollection : NotifyingClass
+    {
+        ObservableCollection<RedditImage> _images = new ObservableCollection<RedditImage>();
+        public ObservableCollection<RedditImage> Images
+        {
+            get { return _images; }
+        }
+
+        double _width;
+        public double Width
+        {
+            get { return _width; }
+            set { SetProperty(ref _width, value); }
         }
     }
 }
