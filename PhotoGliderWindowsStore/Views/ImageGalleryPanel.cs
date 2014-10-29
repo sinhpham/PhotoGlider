@@ -19,12 +19,43 @@ namespace PhotoGliderWindowsStore.Views
 
         protected override Size MeasureOverride(Size availableSize)
         {
+            Point point = new Point(0, 0);
+            int i = 0;
+
             foreach (UIElement child in Children)
             {
                 child.Measure(new Size(availableSize.Width, availableSize.Height));
             }
+            double largestWidth = 0.0;
+            foreach (UIElement child in Children)
+            {
+                if (child.DesiredSize.Width > largestWidth)
+                    largestWidth = child.DesiredSize.Width;
 
-            return base.MeasureOverride(availableSize);
+
+                point.Y = point.Y + child.DesiredSize.Height;
+
+
+                if ((i + 1) < Children.Count)
+                {
+                    if ((point.Y + Children[i + 1].DesiredSize.Height) > availableSize.Height)
+                    {
+                        point.Y = 0;
+                        point.X = point.X + largestWidth;
+                        largestWidth = 0.0;
+                    }
+                }
+                else
+                {
+                    point.X = point.X + largestWidth;
+                    point.Y = availableSize.Height;
+                }
+
+
+                i++;
+            }
+
+            return new Size(point.X/2, point.Y);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
@@ -91,10 +122,10 @@ namespace PhotoGliderWindowsStore.Views
                         point.X = point.X + currWidth;
                     }
                 }
-                
             }
+            var retSize = base.ArrangeOverride(finalSize);
 
-            return base.ArrangeOverride(finalSize);
+            return retSize;
         }
     }
 }
