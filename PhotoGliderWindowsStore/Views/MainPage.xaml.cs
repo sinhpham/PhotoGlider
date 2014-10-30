@@ -219,6 +219,14 @@ namespace PhotoGliderWindowsStore.Views
                         PageDataContext[MenuOpenedKey] = false;
                     }
                 }
+
+                
+
+                if (sv.ExtentWidth - sv.ViewportWidth - sv.HorizontalOffset < 300)
+                {
+                    // Loading logic here.
+                    var a = 0;
+                }
             };
         }
     }
