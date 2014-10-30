@@ -31,13 +31,14 @@ namespace PhotoGliderWindowsStore.Views
             var numPerCol = availableSize.Height / 150;
 
             // Return the total size required as an un-oriented quantity
-            return new Size(_currArrWidth, availableSize.Height);
+            return new Size(_currArrWidth + 150, availableSize.Height);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
             var point = new Point(0, 0);
             var currIdx = 0;
+            var retSize = new Size(0, finalSize.Height);
             //var largestWidth = 0.0;
             var maxColumnWidth = 300;
             while (currIdx != Children.Count)
@@ -76,7 +77,8 @@ namespace PhotoGliderWindowsStore.Views
 
                     currWidth = finalSize.Height / currHwRatioSum;
                 }
-                if (currWidth < maxColumnWidth)
+                
+                if (!double.IsNaN(currWidth) && !double.IsInfinity(currWidth))
                 {
                     foreach (var c in currCol)
                     {
@@ -91,137 +93,17 @@ namespace PhotoGliderWindowsStore.Views
                         var dHeight = currWidth * ratio;
 
                         c.Arrange(new Rect(point, new Size(currWidth, dHeight)));
+
+                        retSize.Width = point.X + currWidth;
+
                         point.Y = point.Y + dHeight;
                     }
                     point.Y = 0;
                     point.X = point.X + currWidth;
                 }
             }
-            var retSize = new Size(point.X, finalSize.Height);
-            _currArrWidth = point.X;
+            _currArrWidth = retSize.Width;
             return retSize;
-        }
-    }
-
-    internal struct OrientedSize
-    {
-        /// <summary>
-        /// The orientation of the structure.
-        /// </summary>
-        private Orientation _orientation;
-
-        /// <summary>
-        /// Gets the orientation of the structure.
-        /// </summary>
-        public Orientation Orientation
-        {
-            get { return _orientation; }
-        }
-
-        /// <summary>
-        /// The size dimension that grows directly with layout placement.
-        /// </summary>
-        private double _direct;
-
-        /// <summary>
-        /// Gets or sets the size dimension that grows directly with layout
-        /// placement.
-        /// </summary>
-        public double Direct
-        {
-            get { return _direct; }
-            set { _direct = value; }
-        }
-
-        /// <summary>
-        /// The size dimension that grows indirectly with the maximum value of
-        /// the layout row or column.
-        /// </summary>
-        private double _indirect;
-
-        /// <summary>
-        /// Gets or sets the size dimension that grows indirectly with the
-        /// maximum value of the layout row or column.
-        /// </summary>
-        public double Indirect
-        {
-            get { return _indirect; }
-            set { _indirect = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the width of the size.
-        /// </summary>
-        public double Width
-        {
-            get
-            {
-                return (Orientation == Orientation.Horizontal) ?
-                    Direct :
-                    Indirect;
-            }
-            set
-            {
-                if (Orientation == Orientation.Horizontal)
-                {
-                    Direct = value;
-                }
-                else
-                {
-                    Indirect = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the height of the size.
-        /// </summary>
-        public double Height
-        {
-            get
-            {
-                return (Orientation != Orientation.Horizontal) ?
-                    Direct :
-                    Indirect;
-            }
-            set
-            {
-                if (Orientation != Orientation.Horizontal)
-                {
-                    Direct = value;
-                }
-                else
-                {
-                    Indirect = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new OrientedSize structure.
-        /// </summary>
-        /// <param name="orientation">Orientation of the structure.</param>
-        public OrientedSize(Orientation orientation) :
-            this(orientation, 0.0, 0.0)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new OrientedSize structure.
-        /// </summary>
-        /// <param name="orientation">Orientation of the structure.</param>
-        /// <param name="width">Un-oriented width of the structure.</param>
-        /// <param name="height">Un-oriented height of the structure.</param>
-        public OrientedSize(Orientation orientation, double width, double height)
-        {
-            _orientation = orientation;
-
-            // All fields must be initialized before we access the this pointer
-            _direct = 0.0;
-            _indirect = 0.0;
-
-            Width = width;
-            Height = height;
         }
     }
 }
