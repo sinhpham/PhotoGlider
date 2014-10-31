@@ -225,10 +225,22 @@ namespace PhotoGliderWindowsStore.Views
                 if (sv.ExtentWidth - sv.ViewportWidth - sv.HorizontalOffset < 300)
                 {
                     // Loading logic here.
-                    var a = 0;
+                    if (!_isLoading)
+                    {
+                        _isLoading = true;
+                        var il = (ISupportIncrementalLoading)VM.Images;
+
+                        il.LoadMoreItemsAsync(50).AsTask().ContinueWith((t) =>
+                        {
+                            _isLoading = false;
+                        });
+                        
+                    }
                 }
             };
         }
+
+        bool _isLoading = false;
     }
 
     public class ThumbnailTemplateSelector : DataTemplateSelector
