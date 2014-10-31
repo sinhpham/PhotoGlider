@@ -33,7 +33,11 @@ namespace PhotoGliderPCL.ViewModels
             }
         }
 
-        public string RedditNextPath { get; set; }
+        string _redditNextPath;
+        public string RedditNextPath {
+            get { return _redditNextPath; }
+            set { SetProperty(ref _redditNextPath, value); }
+        }
 
         private ObservableCollection<RedditImage> _images;
         public ObservableCollection<RedditImage> Images

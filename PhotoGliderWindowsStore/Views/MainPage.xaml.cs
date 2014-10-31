@@ -73,6 +73,16 @@ namespace PhotoGliderWindowsStore.Views
                     var idx = VM.SubReddits.IndexOf(VM.SubReddit);
                     _subList.SelectedIndex = idx;
                 }
+                if (arg.PropertyName == "RedditNextPath")
+                {
+                    if (VM.RedditNextPath == null)
+                    {
+                        // Just refreshed
+                        var il = (ISupportIncrementalLoading)VM.Images;
+                        //// Initial load.
+                        il.LoadMoreItemsAsync(50);
+                    }
+                }
             };
 
             _subList.Items.VectorChanged += (s, arg) =>
@@ -209,7 +219,7 @@ namespace PhotoGliderWindowsStore.Views
         {
             var sv = itemGridView.GetFirstDescendantOfType<ScrollViewer>();
             var il = (ISupportIncrementalLoading)VM.Images;
-            // Initial load.
+            //// Initial load.
             il.LoadMoreItemsAsync(50);
 
             sv.ViewChanged += (s, arg) =>
