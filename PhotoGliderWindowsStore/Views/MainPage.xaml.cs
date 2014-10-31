@@ -208,6 +208,9 @@ namespace PhotoGliderWindowsStore.Views
         private void itemGridView_Loaded(object sender, RoutedEventArgs e)
         {
             var sv = itemGridView.GetFirstDescendantOfType<ScrollViewer>();
+            var il = (ISupportIncrementalLoading)VM.Images;
+            // Initial load.
+            il.LoadMoreItemsAsync(50);
 
             sv.ViewChanged += (s, arg) =>
             {
@@ -224,17 +227,16 @@ namespace PhotoGliderWindowsStore.Views
 
                 if (sv.ExtentWidth - sv.ViewportWidth - sv.HorizontalOffset < 300)
                 {
+                    
                     // Loading logic here.
-                    if (!_isLoading)
+                    if (!_isLoading && il.HasMoreItems)
                     {
                         _isLoading = true;
-                        var il = (ISupportIncrementalLoading)VM.Images;
 
                         il.LoadMoreItemsAsync(50).AsTask().ContinueWith((t) =>
                         {
                             _isLoading = false;
                         });
-                        
                     }
                 }
             };
